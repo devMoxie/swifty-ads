@@ -37,6 +37,7 @@ public protocol SwiftyAdsType: AnyObject {
                     atTop isAtTop: Bool,
                     ignoresSafeArea: Bool,
                     animationDuration: TimeInterval,
+                    distanceAboveTabBar: CGFloat?,
                     onOpen: (() -> Void)?,
                     onClose: (() -> Void)?,
                     onError: ((Error) -> Void)?)

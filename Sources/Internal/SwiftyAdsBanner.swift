@@ -32,6 +32,7 @@ protocol SwiftyAdsBannerType: AnyObject {
               at position: SwiftyAdsBannerPositition,
               isLandscape: Bool,
               animationDuration: TimeInterval,
+              distanceAboveTabBar: CGFloat?,
               onOpen: (() -> Void)?,
               onClose: (() -> Void)?,
               onError: ((Error) -> Void)?)
@@ -56,6 +57,9 @@ final class SwiftyAdsBanner: NSObject {
     private var animator: UIViewPropertyAnimator?
     private var currentView: UIView?
     private var visibleConstant: CGFloat = 0
+    
+    /// Creates some space between tab bar and ad to decrease an accidental touch on the ad
+    private var distanceAboveTabBar: CGFloat = 0
     
     // MARK: - Computed Properties
     
@@ -88,6 +92,7 @@ extension SwiftyAdsBanner: SwiftyAdsBannerType {
               at position: SwiftyAdsBannerPositition,
               isLandscape: Bool,
               animationDuration: TimeInterval,
+              distanceAboveTabBar: CGFloat?,
               onOpen: (() -> Void)?,
               onClose: (() -> Void)?,
               onError: ((Error) -> Void)?) {
@@ -96,6 +101,7 @@ extension SwiftyAdsBanner: SwiftyAdsBannerType {
         self.onOpen = onOpen
         self.onClose = onClose
         self.onError = onError
+        self.distanceAboveTabBar = distanceAboveTabBar ?? 0
         
         // Remove old banners if needed
         remove()
@@ -131,7 +137,19 @@ extension SwiftyAdsBanner: SwiftyAdsBannerType {
             if ignoresSafeArea {
                 bannerViewConstraint = bannerView.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor)
             } else {
-                bannerViewConstraint = bannerView.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor)
+                
+                // Handle UITabBarController
+                if let tabBarController = viewController as? UITabBarController {
+                    let tabController = tabBarController.viewControllers!.first!
+                    let tabBarHeight = tabController.view.safeAreaInsets.bottom
+                    visibleConstant = -tabBarHeight + -self.distanceAboveTabBar
+                    bannerViewConstraint = bannerView.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor, constant: 0)
+                    
+                    // This is needed so that the bannerView animation occurs behind the the tab bar.
+                    viewController.view.bringSubviewToFront(tabBarController.tabBar)
+                } else {
+                    bannerViewConstraint = bannerView.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor)
+                }
             }
         }
          

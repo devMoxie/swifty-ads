@@ -198,6 +198,7 @@ extension SwiftyAds: SwiftyAdsType {
     /// - parameter isAtTop: If set to true the banner will be displayed at the top.
     /// - parameter ignoresSafeArea: If set to true the banner will ignore safe area margins
     /// - parameter animationDuration: The duration of the banner to animate on/off screen.
+    /// - parameter distanceAboveTabBar: The space between the bottom of the banner ad and the top of the tab bar.
     /// - parameter onOpen: An optional callback when the banner was presented.
     /// - parameter onClose: An optional callback when the banner was dismissed or removed.
     /// - parameter onError: An optional callback when an error has occurred.
@@ -205,6 +206,7 @@ extension SwiftyAds: SwiftyAdsType {
                            atTop isAtTop: Bool,
                            ignoresSafeArea: Bool,
                            animationDuration: TimeInterval,
+                           distanceAboveTabBar: CGFloat?,
                            onOpen: (() -> Void)?,
                            onClose: (() -> Void)?,
                            onError: ((Error) -> Void)?) {
@@ -221,6 +223,7 @@ extension SwiftyAds: SwiftyAdsType {
             at: isAtTop ? .top(ignoresSafeArea: ignoresSafeArea) : .bottom(ignoresSafeArea: ignoresSafeArea),
             isLandscape: UIDevice.current.orientation.isLandscape,
             animationDuration: animationDuration,
+            distanceAboveTabBar: distanceAboveTabBar,
             onOpen: onOpen,
             onClose: onClose,
             onError: onError
