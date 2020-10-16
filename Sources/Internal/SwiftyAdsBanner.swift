@@ -139,9 +139,10 @@ extension SwiftyAdsBanner: SwiftyAdsBannerType {
             } else {
                 
                 // Handle UITabBarController
-                if let tabBarController = viewController as? UITabBarController {
-                    let tabController = tabBarController.viewControllers!.first!
-                    let tabBarHeight = tabController.view.safeAreaInsets.bottom
+                if let tabBarController = viewController as? UITabBarController,
+                   let selectedController = tabBarController.selectedViewController {
+                    
+                    let tabBarHeight = selectedController.view.safeAreaInsets.bottom
                     visibleConstant = -tabBarHeight + -self.distanceAboveTabBar
                     bannerViewConstraint = bannerView.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor, constant: 0)
                     
